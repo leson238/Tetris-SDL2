@@ -1,6 +1,7 @@
 #include "Game.h"
 #ifndef LINUX
 #include <windows.h>
+#include <iostream>
 #endif
 
 // Main 
@@ -21,9 +22,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// Game Loop
 	while (!pIO.IsKeyDown(SDLK_ESCAPE)) {
+		int lines{ 0 };
 		pIO.ClearScreen();
 		mGame.DrawScene();
 		pIO.UpdateScreen();
+		std::cout << mGame.GetScore() << std::endl;
 		int mKey = pIO.PollKey();
 		switch (mKey) {
 		case SDLK_RIGHT:
@@ -57,8 +60,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			mBoard.StorePiece(mGame.posX, mGame.posY - 1, mGame.block, mGame.bRotation);
 
-			mBoard.DeletePossibleLines();
-
+			lines = mBoard.DeletePossibleLines();
+			mGame.SetScore(lines);
 			if (mBoard.IsGameOver()) {
 				pIO.GetKey();
 				exit(0);
@@ -87,8 +90,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			else {
 				mBoard.StorePiece(mGame.posX, mGame.posY, mGame.block, mGame.bRotation);
 
-				mBoard.DeletePossibleLines();
-
+				lines = mBoard.DeletePossibleLines();
+				mGame.SetScore(lines);
 				if (mBoard.IsGameOver()) {
 					pIO.GetKey();
 					exit(0);

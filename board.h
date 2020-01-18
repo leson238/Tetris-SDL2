@@ -31,7 +31,7 @@ public:
     bool IsFreeCell             (int pX, int pY);
     bool IsPossibleMove         (int pX, int pY, int block, int bRotation);
     void StorePiece             (int pX, int pY, int block, int bRotation);
-    void DeletePossibleLines    ();
+    int DeletePossibleLines     ();
     bool IsGameOver             ();
  
 private:

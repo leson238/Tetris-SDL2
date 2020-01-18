@@ -2,12 +2,11 @@
 
 #include "IO.h"
 #include <cstdlib>
+#include <string>
+
 static Uint32 pixels[480 * 640];
 
-static Uint32 mColors[8] = { 0x000000ff,					// Colors
-							   0xff0000ff, 0x00ff00ff, 0x0000ffff,
-							   0x00ffffff, 0xff00ffff, 0xffff00ff,
-							   0xffffffff };
+static short mColors[8][4] = { {0,0,0,255},{255,0,0,255}, {0,255,0,255}, {0,0,255,255}, {255,255,0,255}, {0,255,255,255}, {255,0,255,255}, {255,255,255,255} };
 
 /*
 ======================================
@@ -42,15 +41,16 @@ Parameters:
 >> pC				Rectangle color
 */
 void IO::DrawRectangle(int pX1, int pY1, int pX2, int pY2, MyColor pC) {
+	/*
+	
+	*/
 	SDL_Rect r;
 	r.x = pX1;
 	r.y = pY1;
 	r.w = pX2 - pX1;
 	r.h = pY2 - pY1;
-	for (int i = 0; i < 480 * 640; i++)
-		pixels[i] = mColors[int(pC)];
-	SDL_UpdateTexture(sdlTexture, NULL, pixels, 480);
-	SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, &r);
+	SDL_SetRenderDrawColor(sdlRenderer, mColors[int(pC)][0], mColors[int(pC)][1], mColors[int(pC)][2], mColors[int(pC)][3]);
+	SDL_RenderFillRect(sdlRenderer, &r);
 }
 
 
@@ -65,7 +65,6 @@ int IO::GetScreenHeight() {
 // Update screen
 void IO::UpdateScreen() {
 	SDL_RenderPresent(sdlRenderer);
-	SDL_RenderClear(sdlRenderer);
 }
 
 
@@ -112,16 +111,43 @@ int IO::InitGraph() {
 		SDL_WINDOWPOS_CENTERED,
 		480, 640,
 		SDL_WINDOW_RESIZABLE);
-	sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_PRESENTVSYNC);
-	sdlTexture = SDL_CreateTexture(sdlRenderer,
-		SDL_PIXELFORMAT_RGBA8888,
-		SDL_TEXTUREACCESS_STATIC,
-		480, 640);
-
+	sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_ACCELERATED);
+	SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(sdlRenderer);
 	return 0;
+}
+
+void IO::DrawScore(int score, int cX, int cY) {
+	if (TTF_Init() == -1) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+			"Not init",
+			TTF_GetError(),
+			NULL);
+	}
+	TTF_Font* Calibri = TTF_OpenFont("C:\\Windows\\Fonts\\Calibri.ttf", 24);
+	if (!Calibri) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+			"Missing file",
+			"Font is missing. Please reinstall the program.",
+			NULL);
+	}
+	SDL_Color ORANGE = { 255,0,255 };
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Calibri, ("Score:" + std::to_string(score)).c_str(), ORANGE);
+	sdlTexture = NULL;
+	sdlTexture = SDL_CreateTextureFromSurface(sdlRenderer, surfaceMessage);
+
+	SDL_Rect Message_rect;
+	Message_rect.x = cX;
+	Message_rect.y = cY;
+	Message_rect.w = 100;
+	Message_rect.h = 20;
+
+	SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, &Message_rect); 
+	SDL_FreeSurface(surfaceMessage);
 }
 
 IO::~IO() {
 	SDL_DestroyRenderer(sdlRenderer);
+	SDL_DestroyTexture(sdlTexture);
 	SDL_DestroyWindow(sdlWindow);
 }

@@ -11,7 +11,7 @@
 // ------ Defines -----
  
 #define WAIT_TIME 700          // Number of milliseconds that the block remains before going 1 cell down */ 
- 
+#define BASIC_SCORE 10 
  
 // --------------------------------------------------------------------------------
 //                                   Game
@@ -23,12 +23,14 @@ public:
  
     void DrawScene      ();
     bool CreateNewBlock ();
-    
+    int GetScore        ();
+    void SetScore       (int bonus);
+
     int posX, posY;               // Position of the block that is falling down
     int block, bRotation;         // Type and rotation the block that is falling down
  
 private:
- 
+    int score{ 0 };                // Score
     int mScreenHeight;             // Screen height in pixels
     int nextPosX, nextPosY;        // Position of the next piece
     int nextBlock, nextRotation;   // Type and rotation of the next piece

@@ -1,5 +1,6 @@
 #include "game.h"
 #include <cstdlib>
+#include <math.h>
 /*
 Get a random int between to integers
 Parameters:
@@ -86,7 +87,7 @@ void Game::DrawBoard() {
 	int x1 = BOARD_POSITION - (CELL_SIZE * (BOARD_WIDTH / 2)) - 1;
 	int x2 = BOARD_POSITION + (CELL_SIZE * (BOARD_WIDTH / 2));
 	int y = mScreenHeight - (CELL_SIZE * BOARD_HEIGHT);
-
+	mIO->DrawScore(GetScore(), x1 + (x2 - x1)/2 - 50, y - 5*CELL_SIZE);
 	// Check that the vertical margin is not to small
 	//assert (y > MIN_VERTICAL_MARGIN);
 
@@ -94,7 +95,6 @@ void Game::DrawBoard() {
 	mIO->DrawRectangle(x1 - BOARD_LINE_WIDTH, y, x1, mScreenHeight - 1, MyColor::BLUE);
 
 	mIO->DrawRectangle(x2, y, x2 + BOARD_LINE_WIDTH, mScreenHeight - 1, MyColor::BLUE);
-
 	// Check that the horizontal margin is not to small
 	// assert (x1 > MIN_HORIZONTAL_MARGIN);
 
@@ -126,5 +126,14 @@ void Game::DrawScene() {
 	DrawBoard();                                                   // Draw the borders and blocks stored in the board
 	DrawBlock(posX, posY, block, bRotation);                       // Draw the playing block
 	DrawBlock(nextPosX, nextPosY, nextBlock, nextRotation);        // Draw the next block
+}
+
+int Game::GetScore() {
+	return score;
+}
+
+void Game::SetScore(int lines) {
+	if (lines > 0)
+		score += int(pow(2, float(lines) - 1)*BASIC_SCORE);
 }
 
