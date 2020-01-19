@@ -7,10 +7,10 @@
 #include "blocks.h"
 #include "IO.h"
 #include <time.h>
+#include <string>
  
 // ------ Defines -----
  
-#define WAIT_TIME 700          // Number of milliseconds that the block remains before going 1 cell down */ 
 #define BASIC_SCORE 10 
  
 // --------------------------------------------------------------------------------
@@ -24,12 +24,19 @@ public:
     void DrawScene      ();
     bool CreateNewBlock ();
     int GetScore        ();
-    void SetScore       (int bonus);
+    void SetScore       (int lines);
+    int GetLevel        ();
+    void SetLevel       (int total_lines);
+    int GetWaitTime     ();
+    void SetWaitTime    ();
+
 
     int posX, posY;               // Position of the block that is falling down
     int block, bRotation;         // Type and rotation the block that is falling down
  
 private:
+    int level{ 1 };                //Level 
+    int waitTime{ 700 };           //The wait time before the block going down 1 cell
     int score{ 0 };                // Score
     int mScreenHeight;             // Screen height in pixels
     int nextPosX, nextPosY;        // Position of the next piece

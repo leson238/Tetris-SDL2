@@ -19,14 +19,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Game mGame(&mBoard, &block, &pIO, mScreenHeight);
 
 	unsigned long mTime1 = SDL_GetTicks();
-
+	int total_lines{ 0 };
 	// Game Loop
 	while (!pIO.IsKeyDown(SDLK_ESCAPE)) {
 		int lines{ 0 };
 		pIO.ClearScreen();
 		mGame.DrawScene();
 		pIO.UpdateScreen();
-		std::cout << mGame.GetScore() << std::endl;
 		int mKey = pIO.PollKey();
 		switch (mKey) {
 		case SDLK_RIGHT:
@@ -62,6 +61,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			lines = mBoard.DeletePossibleLines();
 			mGame.SetScore(lines);
+			total_lines += lines;
+			mGame.SetLevel(total_lines);
+			mGame.SetWaitTime();
 			if (mBoard.IsGameOver()) {
 				pIO.GetKey();
 				exit(0);
@@ -83,7 +85,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		unsigned long mTime3 = SDL_GetTicks();
-		if ((mTime3 - mTime1) > WAIT_TIME) {
+		if ((mTime3 - mTime1) > mGame.GetWaitTime()) {
 			if (mBoard.IsPossibleMove(mGame.posX, mGame.posY + 1, mGame.block, mGame.bRotation)) {
 				mGame.posY++;
 			}
@@ -92,6 +94,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 				lines = mBoard.DeletePossibleLines();
 				mGame.SetScore(lines);
+				total_lines += lines;
+				mGame.SetLevel(total_lines);
+				mGame.SetWaitTime();
 				if (mBoard.IsGameOver()) {
 					pIO.GetKey();
 					exit(0);

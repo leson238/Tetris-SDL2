@@ -117,7 +117,7 @@ int IO::InitGraph() {
 	return 0;
 }
 
-void IO::DrawScore(int score, int cX, int cY) {
+void IO::DrawInformation(std::string description, int information, int cX, int cY) {
 	if (TTF_Init() == -1) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
 			"Not init",
@@ -132,7 +132,7 @@ void IO::DrawScore(int score, int cX, int cY) {
 			NULL);
 	}
 	SDL_Color ORANGE = { 255,0,255 };
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Calibri, ("Score:" + std::to_string(score)).c_str(), ORANGE);
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Calibri, (description + std::to_string(information)).c_str(), ORANGE);
 	sdlTexture = NULL;
 	sdlTexture = SDL_CreateTextureFromSurface(sdlRenderer, surfaceMessage);
 

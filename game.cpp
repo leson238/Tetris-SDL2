@@ -1,6 +1,7 @@
 #include "game.h"
 #include <cstdlib>
 #include <math.h>
+#include <string>
 /*
 Get a random int between to integers
 Parameters:
@@ -87,7 +88,8 @@ void Game::DrawBoard() {
 	int x1 = BOARD_POSITION - (CELL_SIZE * (BOARD_WIDTH / 2)) - 1;
 	int x2 = BOARD_POSITION + (CELL_SIZE * (BOARD_WIDTH / 2));
 	int y = mScreenHeight - (CELL_SIZE * BOARD_HEIGHT);
-	mIO->DrawScore(GetScore(), x1 + (x2 - x1)/2 - 50, y - 5*CELL_SIZE);
+	mIO->DrawInformation("Score: ", GetScore(), x1 + (x2 - x1)/2 - 50, y - 5*CELL_SIZE);
+	mIO->DrawInformation("Level: ", GetLevel(), x1 + (x2 - x1) / 2 - 50, y - 7 * CELL_SIZE);
 	// Check that the vertical margin is not to small
 	//assert (y > MIN_VERTICAL_MARGIN);
 
@@ -134,6 +136,20 @@ int Game::GetScore() {
 
 void Game::SetScore(int lines) {
 	if (lines > 0)
-		score += int(pow(2, float(lines) - 1)*BASIC_SCORE);
+		score += int(pow(2, double(lines) - 1)*(BASIC_SCORE * (level - 1)));
+}
+int Game::GetLevel() {
+	return level;
+}
+void Game::SetLevel(int total_lines) {
+	level = (total_lines / 20) + 1;
+}
+
+int Game::GetWaitTime() {
+	return waitTime;
+}
+void Game::SetWaitTime() {
+	if (waitTime >= 300)
+		waitTime -= (level - 1) * 50;
 }
 
